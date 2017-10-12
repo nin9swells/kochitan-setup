@@ -1,0 +1,45 @@
+---
+
+- hosts: localhost
+  connection: local
+  tasks:
+    - name: ensure ppa is added
+      apt_repository:
+        repo: "{{ item }}"
+        update_cache: yes
+      with_items:
+        - "ppa:mc3man/xerus-media"
+
+    - name: ensure dependencies are installed
+      apt:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - "build-essential"
+        - "unzip"
+        - "software-properties-common"
+        - "git"
+        - "ffmpeg"
+        - "libopus-dev"
+        - "libffi-dev"
+        - "libsodium-dev"
+        - "python3-pip"
+
+    - name: ensure necessary dir are created
+      file:
+        state: directory
+        path: "/opt/discord-bot/musicbot"
+        mode: 0755
+
+    - name: ensure musicbot is cloned
+      git:
+        repo: "https://github.com/Just-Some-Bots/MusicBot.git"
+        dest: "/opt/discord-bot/musicbot"
+        
+    - name: ensure pip is upgraded
+      shell: python3 -m pip install --upgrade pip
+
+    - name: ensure requirement are installed
+      shell: python3 -m pip install -U -r requirements.txt
+      args:
+        chdir: /opt/discord-bot/musicbot
