@@ -35,3 +35,11 @@
         global: yes
         state: latest
       become: yes
+
+    - name: ensure pm2 log is symlinked to /var/log dir
+      file:
+        state: link
+        src: /root/.pm2/logs
+        path: /var/log/pm2
+        mode: 0755
+      become: yes
