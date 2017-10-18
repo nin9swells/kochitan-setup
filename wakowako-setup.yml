@@ -1,0 +1,19 @@
+---
+
+- hosts: localhost
+  connection: local
+  tasks:
+    - name: ensure necessary directory is creted
+      file:
+        state: directory
+        path: "/opt/discord-bot/wakowako"
+
+    # TODO:
+    #   - get wakowako code from github
+
+    - name: ensure cron configuration for daily restart is present
+      cron:
+        name: "restart wakowako"
+        minute: "0"
+        hour: "21"
+        job: "pm2 restart wakowako"
