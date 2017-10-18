@@ -1,0 +1,25 @@
+---
+
+- hosts: localhost
+  connection: local
+  tasks:
+    - name: ensure necessary directories are exist
+      file:
+        state: directory
+        path: "{{ item }}"
+      with_items:
+        - "/opt/discord-bot/discord-irc"
+        - "/opt/discord-bot/conf"
+
+    - name: ensure discord-irc is installed
+      npm:
+        global: yes
+        name: "discord-irc"
+        state: present
+        version: 2.3.0
+
+    - name: ensure pm2 config is available
+      copy:
+        src: "discord-irc.sh"
+        dest: "/opt/discord-bot/conf/discord-irc.sh"
+        mode: 0755
